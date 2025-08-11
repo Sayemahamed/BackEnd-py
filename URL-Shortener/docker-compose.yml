@@ -1,0 +1,82 @@
+services:
+  backend:
+    build:
+      context: ./BackEnd/API
+      dockerfile: Dockerfile
+    ports:
+      - "8106:8000"
+    volumes:
+      - ./BackEnd/API:/API
+    depends_on:
+      - postgres
+      - redis
+
+  frontend:
+    build:
+      context: ./FrontEnd
+      dockerfile: Dockerfile
+    ports:
+      - "8105:5173"
+    volumes:
+      - ./FrontEnd:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "8107:5432"
+
+  redis:
+    image: redis:latest
+    restart: always
+
+  task_agent:
+    build:
+      context: ./BackEnd/API/celery
+      dockerfile: Dockerfile
+    volumes:
+      - ./BackEnd/API/celery:/app
+    depends_on:
+      - redis
+      - postgres
+
+  beat:
+    build:
+      context: ./BackEnd/API/celery
+      dockerfile: Dockerfile_beat
+    volumes:
+      - ./BackEnd/API/celery:/app
+    depends_on:
+      - redis
+      - task_agent
+
+  mcp_browser:
+    build:
+      context: ./MCP/browser
+      dockerfile: Dockerfile
+    ports:
+      - "8901:8931"
+
+  mcp_email:
+    build:
+      context: ./MCP/SMTP
+      dockerfile: Dockerfile
+
+  mcp_database:
+    build:
+      context: ./MCP/database
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
