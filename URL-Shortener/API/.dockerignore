@@ -1,0 +1,46 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# UV cache (if present locally)
+.cache/
+# or more specifically:
+# .cache/uv/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and SQLite databases
+*.log
+*.sqlite3
+
+# Test reports and coverage
+.coverage
+coverage/
+htmlcov/
+
+# Docker dev overrides
+docker-compose.override.yml
+Dockerfile.dev
+
+# Git data
+.git
+.gitignore

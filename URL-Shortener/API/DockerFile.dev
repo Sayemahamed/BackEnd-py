@@ -1,0 +1,26 @@
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
+
+WORKDIR /API
+
+# Carry over UV’s compile & link settings
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_LINK_MODE=copy
+ENV UV_TOOL_BIN_DIR=/usr/local/bin
+
+# 1. Copy lockfiles first to leverage build cache for dependency changes only
+COPY pyproject.toml uv.lock ./
+
+# 2. Install production dependencies (no project source yet)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-install-project --no-dev
+
+# 3. Copy full project and install dev dependencies
+COPY . /API
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked
+
+# 4. Ensure venv bin is ahead on PATH
+ENV PATH="/API/.venv/bin:$PATH"
+
+# 5. Default to FastAPI’s development server
+CMD ["uv", "run", "fastapi", "dev", "--host", "0.0.0.0"]

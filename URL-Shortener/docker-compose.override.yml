@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      context: ./API
+      dockerfile: DockerFile.dev
+    volumes:
+      - ./API:/API:delegated
+    ports:
+      - "8000:8000"
+    environment:
+      - ENV=development
+      - DEBUG=1
+

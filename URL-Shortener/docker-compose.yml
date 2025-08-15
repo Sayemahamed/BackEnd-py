@@ -1,27 +1,14 @@
 services:
-  backend:
+  api:
     build:
-      context: ./BackEnd/API
-      dockerfile: Dockerfile
+      context: ./API
+      dockerfile: DockerFile
     ports:
-      - "8106:8000"
-    volumes:
-      - ./BackEnd/API:/API
-    depends_on:
-      - postgres
-      - redis
+      - "8000:8000"
+    # depends_on:
+    #   - postgres
+    #   - redis
 
-  frontend:
-    build:
-      context: ./FrontEnd
-      dockerfile: Dockerfile
-    ports:
-      - "8105:5173"
-    volumes:
-      - ./FrontEnd:/app
-      - /app/node_modules
-    depends_on:
-      - backend
 
   postgres:
     image: postgres:16-alpine
@@ -33,50 +20,22 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "8107:5432"
+      - "5432:5432"
 
-  redis:
-    image: redis:latest
-    restart: always
+  # redis:
+  #   image: redis:latest
+  #   restart: always
 
-  task_agent:
-    build:
-      context: ./BackEnd/API/celery
-      dockerfile: Dockerfile
-    volumes:
-      - ./BackEnd/API/celery:/app
-    depends_on:
-      - redis
-      - postgres
 
-  beat:
-    build:
-      context: ./BackEnd/API/celery
-      dockerfile: Dockerfile_beat
-    volumes:
-      - ./BackEnd/API/celery:/app
-    depends_on:
-      - redis
-      - task_agent
-
-  mcp_browser:
-    build:
-      context: ./MCP/browser
-      dockerfile: Dockerfile
-    ports:
-      - "8901:8931"
-
-  mcp_email:
-    build:
-      context: ./MCP/SMTP
-      dockerfile: Dockerfile
-
-  mcp_database:
-    build:
-      context: ./MCP/database
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
+  # beat:
+  #   build:
+  #     context: ./BackEnd/API/celery
+  #     dockerfile: Dockerfile_beat
+  #   volumes:
+  #     - ./BackEnd/API/celery:/app
+  #   depends_on:
+  #     - redis
+  #     - task_agent
 
 volumes:
   postgres_data:
