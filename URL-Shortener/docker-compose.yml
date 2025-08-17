@@ -9,9 +9,16 @@ services:
     #   - postgres
     #   - redis
 
+  worker:
+    build:
+      context: ./Worker
+      dockerfile: DockerFile
+    # depends_on:
+    #   - redis
+
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18beta3-alpine
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -25,8 +32,11 @@ services:
   # redis:
   #   image: redis:latest
   #   restart: always
-
-
+  dragonfly:                                                                                                                                    
+    image: 'docker.dragonflydb.io/dragonflydb/dragonfly'                                                                                        
+    ulimits:
+      memlock: -1
+      
   # beat:
   #   build:
   #     context: ./BackEnd/API/celery

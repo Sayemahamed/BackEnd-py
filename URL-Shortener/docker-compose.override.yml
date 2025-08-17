@@ -4,7 +4,18 @@ services:
       context: ./API
       dockerfile: DockerFile.dev
     volumes:
-      - ./API:/API:delegated
+      - ./API/celery:/API/celery:delegated
+      - ./API/db:/API/db:delegated
+      - ./API/routes:/API/routes:delegated
+      - ./API/schemas:/API/schemas:delegated
+      - ./API/services:/API/services:delegated
+      - ./API/__init__.py:/API/__init__.py:delegated
+      - ./API/.env:/API/.env:delegated
+      - ./API/.python-version:/API/.python-version:delegated
+      - ./API/config.py:/API/config.py:delegated
+      - ./API/main.py:/API/main.py:delegated
+      - ./API/pyproject.toml:/API/pyproject.toml:delegated
+      - ./API/uv.lock:/API/uv.lock:delegated
     ports:
       - "8000:8000"
     environment:
