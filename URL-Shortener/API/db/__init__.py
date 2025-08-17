@@ -1,2 +1,2 @@
-from .connection import init_db,get_async_session
+from .connection import get_async_session, init_db
 from .models import User

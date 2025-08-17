@@ -16,7 +16,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
         90, description="Access token validity duration in minutes"
     )
-
+    REFRESH_TOKEN_EXPIRE_DAYS: int = Field(
+        30, description="Refresh token validity duration in days"
+    )
     # --- Database ---
     # Example: postgresql+asyncpg://user:password@host:port/dbname
     POSTGRES_URL_ASYNC: str = Field(..., description="Async PostgreSQL connection URL")
