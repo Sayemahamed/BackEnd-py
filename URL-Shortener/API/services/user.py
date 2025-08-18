@@ -1,10 +1,10 @@
 from API.db import User
-from API.schemas import UserCreationSchema
-from API.services import get_password_hash
+from API.schemas import UserCreationSchema,UserUpdateSchema,UserDeleteSchema
+from API.services import get_password_hash, verify_password
 from sqlmodel import select
 from sqlalchemy.exc import IntegrityError as alchemy_IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
-from API.exceptions import UserAlreadyExists,IntegrityError
+from API.exceptions import UserAlreadyExists,IntegrityError,UserNotFound,WrongPassword
 
 
 class UserService:
@@ -39,3 +39,22 @@ class UserService:
         except alchemy_IntegrityError:
             await session.rollback()
             raise IntegrityError
+    
+    async def update_user(self, user: User, user_data: UserUpdateSchema, session: AsyncSession) -> User:
+        if user_data.username:
+            user.username = user_data.username
+        if user_data.email:
+            user.email = user_data.email
+        if user_data.new_password:
+            if  user_data.previous_password is None or not verify_password(user_data.previous_password, user.hashed_password):
+                raise WrongPassword(extra={"detail": "Provide current password for password update."})
+            user.hashed_password = get_password_hash(user_data.new_password)
+        await session.commit()
+        await session.refresh(user)
+        return user
+
+    async def delete_user(self,user_data: UserDeleteSchema, user: User, session: AsyncSession) -> None:
+        if not verify_password(user_data.password, user.hashed_password):
+            raise WrongPassword
+        await session.delete(user)
+        await session.commit()

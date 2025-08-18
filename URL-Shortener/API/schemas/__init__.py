@@ -4,4 +4,5 @@ from .user import (
     UserCreationSchema,
     UserResponseSchema,
     UserUpdateSchema,
+    UserDeleteSchema
 )
