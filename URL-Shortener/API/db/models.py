@@ -2,7 +2,7 @@ import uuid
 from datetime import datetime
 from typing import Optional
 
-from nanoid import generate
+
 from pydantic import EmailStr
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, text
 from sqlalchemy.dialects.postgresql import TEXT, UUID
@@ -99,9 +99,8 @@ class ShortURL(SQLModel, table=True):
     )
 
     short_code: str = Field(
-        default_factory=lambda: generate("abcdefghijklmnopqrstuvwxyz0123456789", 6),
         sa_column=Column(
-            String(6),
+            String(12),
             nullable=False,
             unique=True,
             index=True,

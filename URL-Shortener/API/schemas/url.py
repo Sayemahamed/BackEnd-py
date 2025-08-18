@@ -10,10 +10,7 @@ class URLCreationSchema(BaseModel):
         ...,
         description="The URL to shorten (must start with http:// or https://)",
     )
-    expires_at: Optional[datetime] = Field(
-        None,
-        description="Optional expiration timestamp (must be in the future)",
-    )
+
 
     # Forbid extra fields and allow population from attribute names
     model_config = ConfigDict(
@@ -21,20 +18,16 @@ class URLCreationSchema(BaseModel):
         populate_by_name=True,
     )
 
-    @field_validator("expires_at")
-    def check_expires_in_future(cls, v: datetime) -> datetime:
-        if v <= datetime.utcnow():
-            raise ValueError("expires_at must be a future datetime")
-        return v
+
 
 
 class URLCreatedResponseSchema(BaseModel):
     id: UUID = Field(..., description="Primary key of the ShortURL record")
     short_code: str = Field(..., description="Generated slug (e.g. aB78xZ)")
-    original_url: HttpUrl = Field(
+    original_url: str = Field(
         ..., description="The original URL that was shortened"
     )
-    short_url: HttpUrl = Field(..., description="Full shortened URL (including domain)")
+    short_url: str = Field(..., description="Full shortened URL (including domain)")
     created_at: datetime = Field(..., description="When this short link was created")
     expires_at: Optional[datetime] = Field(
         None, description="Expiration timestamp, if any"

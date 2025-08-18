@@ -19,6 +19,8 @@ PWD_CONTEXT = CryptContext(
     deprecated="auto",
 )
 
+OAUTH2_SCHEME_OPTIONAL = OAuth2PasswordBearer(    tokenUrl="/api/v1/auth/token",
+    refreshUrl="/api/v1/auth/refresh", auto_error=False)
 
 def verify_password(plain_password, hashed_password):
     return PWD_CONTEXT.verify(plain_password, hashed_password)
@@ -56,20 +58,20 @@ async def validate_token(
             algorithms=[settings.ALGORITHM],
             options={"verify_exp": True},
         )
+        return TokenPayload.model_validate(payload)
     except jwt.ExpiredSignatureError:
         raise TokenExpired().to_http()
     except jwt.InvalidTokenError:
         raise TokenInvalid().to_http()
 
-    return TokenPayload.model_validate(payload)
 
 
-async def validate_token_optional(request: Request) -> Optional[TokenPayload]:
-    auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        return None  # No token provided
 
-    token = auth_header.removeprefix("Bearer ").strip()
+async def validate_token_optional(
+    token: Optional[str] = Depends(OAUTH2_SCHEME_OPTIONAL),
+) -> Optional[TokenPayload]:
+    if not token:
+        return None
 
     try:
         payload = jwt.decode(
@@ -79,7 +81,9 @@ async def validate_token_optional(request: Request) -> Optional[TokenPayload]:
             options={"verify_exp": True},
         )
         return TokenPayload.model_validate(payload)
+
     except jwt.ExpiredSignatureError:
         raise TokenExpired().to_http()
     except jwt.InvalidTokenError:
         raise TokenInvalid().to_http()
+
