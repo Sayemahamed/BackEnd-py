@@ -148,6 +148,7 @@ class ShortURL(SQLModel, table=True):
         ),
     )
 
+
 class Visit(SQLModel, table=True):
     id: uuid.UUID = Field(
         sa_column=Column(

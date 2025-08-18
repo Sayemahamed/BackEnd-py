@@ -1,10 +1,9 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
-
 from API.db import init_db
 from API.routes import auth_router, user_router
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
 
 @asynccontextmanager

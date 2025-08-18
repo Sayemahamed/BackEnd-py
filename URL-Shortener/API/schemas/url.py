@@ -31,10 +31,14 @@ class URLCreationSchema(BaseModel):
 class URLCreatedResponseSchema(BaseModel):
     id: UUID = Field(..., description="Primary key of the ShortURL record")
     short_code: str = Field(..., description="Generated slug (e.g. aB78xZ)")
-    original_url: HttpUrl = Field(..., description="The original URL that was shortened")
+    original_url: HttpUrl = Field(
+        ..., description="The original URL that was shortened"
+    )
     short_url: HttpUrl = Field(..., description="Full shortened URL (including domain)")
     created_at: datetime = Field(..., description="When this short link was created")
-    expires_at: Optional[datetime] = Field(None, description="Expiration timestamp, if any")
+    expires_at: Optional[datetime] = Field(
+        None, description="Expiration timestamp, if any"
+    )
 
     model_config = ConfigDict(
         extra="forbid",
@@ -52,7 +56,9 @@ class URLInfo(BaseModel):
         description="Total number of times this URL was visited",
     )
     created_at: datetime = Field(..., description="Creation timestamp")
-    expires_at: Optional[datetime] = Field(None, description="Expiration timestamp, if set")
+    expires_at: Optional[datetime] = Field(
+        None, description="Expiration timestamp, if set"
+    )
 
     model_config = ConfigDict(extra="forbid")
 

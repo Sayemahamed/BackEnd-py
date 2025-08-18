@@ -1,2 +1,2 @@
 from .connection import get_async_session, init_db
-from .models import User,Visit,ShortURL
+from .models import ShortURL, User, Visit

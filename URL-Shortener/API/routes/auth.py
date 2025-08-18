@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlmodel.ext.asyncio.session import AsyncSession
-
 from API.db import get_async_session
 from API.exceptions import PasswordOrEmailInvalid
 from API.schemas import TokenResponse
 from API.services import UserService, create_access_token, verify_password
+from fastapi import APIRouter, Depends
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 auth_router = APIRouter()
 

@@ -1,15 +1,10 @@
+from API.db import User
+from API.exceptions import IntegrityError, UserAlreadyExists, WrongPassword
+from API.schemas import UserCreationSchema, UserDeleteSchema, UserUpdateSchema
+from API.services import get_password_hash, verify_password
 from sqlalchemy.exc import IntegrityError as alchemy_IntegrityError
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
-
-from API.db import User
-from API.exceptions import (
-    IntegrityError,
-    UserAlreadyExists,
-    WrongPassword,
-)
-from API.schemas import UserCreationSchema, UserDeleteSchema, UserUpdateSchema
-from API.services import get_password_hash, verify_password
 
 
 class UserService:

@@ -1,21 +1,11 @@
+from API.db import User, get_async_session
+from API.exceptions import (IntegrityError, UserAlreadyExists, UserNotFound,
+                            WrongPassword)
+from API.schemas import (TokenPayload, UserCreationSchema, UserDeleteSchema,
+                         UserResponseSchema, UserUpdateSchema)
+from API.services import UserService, validate_token
 from fastapi import APIRouter, Depends, status
 from sqlmodel.ext.asyncio.session import AsyncSession
-
-from API.db import User, get_async_session
-from API.exceptions import (
-    IntegrityError,
-    UserAlreadyExists,
-    UserNotFound,
-    WrongPassword,
-)
-from API.schemas import (
-    TokenPayload,
-    UserCreationSchema,
-    UserDeleteSchema,
-    UserResponseSchema,
-    UserUpdateSchema,
-)
-from API.services import UserService, validate_token
 
 user_router = APIRouter()
 

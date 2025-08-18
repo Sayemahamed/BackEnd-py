@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 import jwt
-from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
-
 from API.config import settings
 from API.exceptions import TokenExpired, TokenInvalid
 from API.schemas import TokenPayload
+from fastapi import Depends, Request
+from fastapi.security import OAuth2PasswordBearer
+from passlib.context import CryptContext
 
 OAUTH2_SCHEME = OAuth2PasswordBearer(
     tokenUrl="/api/v1/auth/token",
@@ -62,3 +62,24 @@ async def validate_token(
         raise TokenInvalid().to_http()
 
     return TokenPayload.model_validate(payload)
+
+
+async def validate_token_optional(request: Request) -> Optional[TokenPayload]:
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        return None  # No token provided
+
+    token = auth_header.removeprefix("Bearer ").strip()
+
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+            options={"verify_exp": True},
+        )
+        return TokenPayload.model_validate(payload)
+    except jwt.ExpiredSignatureError:
+        raise TokenExpired().to_http()
+    except jwt.InvalidTokenError:
+        raise TokenInvalid().to_http()
