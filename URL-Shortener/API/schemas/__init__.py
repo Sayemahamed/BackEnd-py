@@ -1,4 +1,4 @@
-from .auth import TokenPayload
+from .auth import TokenPayload, TokenResponse
 from .user import (
     UserBaseSchema,
     UserCreationSchema,

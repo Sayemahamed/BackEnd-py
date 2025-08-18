@@ -9,6 +9,7 @@ services:
       - ./API/routes:/API/routes:delegated
       - ./API/schemas:/API/schemas:delegated
       - ./API/services:/API/services:delegated
+      - ./API/exceptions:/API/exceptions:delegated
       - ./API/__init__.py:/API/__init__.py:delegated
       - ./API/.env:/API/.env:delegated
       - ./API/.python-version:/API/.python-version:delegated

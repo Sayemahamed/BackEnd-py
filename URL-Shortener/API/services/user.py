@@ -1,36 +1,30 @@
-from os import name
-from re import U
-from sqlite3 import IntegrityError
-
-from API.db import User, get_async_session
-from API.schemas import UserCreationSchema, UserResponseSchema
+from API.db import User
+from API.schemas import UserCreationSchema
 from API.services import get_password_hash
-from fastapi import Depends, HTTPException, status
 from sqlmodel import select
+from sqlalchemy.exc import IntegrityError as alchemy_IntegrityError
 from sqlmodel.ext.asyncio.session import AsyncSession
+from API.exceptions import UserAlreadyExists,IntegrityError
 
 
 class UserService:
     def __init__(self) -> None:
         pass
 
-    async def ger_user_by_email(self, email: str, session: AsyncSession) -> User | None:
+    async def get_user_by_email(self, email: str, session: AsyncSession) -> User | None:
         user = await session.exec(select(User).where(User.email == email.lower()))
         return user.first()
 
-    async def ger_user_by_id(self, id: str, session: AsyncSession) -> User | None:
+    async def get_user_by_id(self, id: str, session: AsyncSession) -> User | None:
         user = await session.exec(select(User).where(User.id == id))
         return user.first()
 
     async def create_user(
         self, user_data: UserCreationSchema, session: AsyncSession
     ) -> User:
-        existing_user = await self.ger_user_by_email(user_data.email, session)
+        existing_user = await self.get_user_by_email(user_data.email, session)
         if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User with this email already exists",
-            )
+            raise UserAlreadyExists
         hashed_password = get_password_hash(user_data.password)
         user = User(
             username=user_data.username,
@@ -42,9 +36,6 @@ class UserService:
             await session.commit()
             await session.refresh(user)
             return user
-        except IntegrityError:
+        except alchemy_IntegrityError:
             await session.rollback()
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="An unexpected error occurred",
-            )
+            raise IntegrityError

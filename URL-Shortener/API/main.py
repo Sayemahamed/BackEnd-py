@@ -1,7 +1,9 @@
 from contextlib import asynccontextmanager
 
+from fastapi.responses import JSONResponse
+
 from API.db import init_db
-from API.routes import user_router
+from API.routes import user_router, auth_router
 from fastapi import FastAPI
 
 
@@ -18,7 +20,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(user_router, prefix="/user", tags=["User"])
+
+
+prefix = "/v1"
+app.include_router(user_router, prefix=f"{prefix}/user", tags=["User"])
+app.include_router(auth_router, prefix=f"{prefix}/auth", tags=["Auth"])
 
 
 @app.get("/")

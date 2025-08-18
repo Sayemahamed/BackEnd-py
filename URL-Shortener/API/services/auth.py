@@ -1,15 +1,15 @@
 from datetime import datetime, timedelta, timezone
-from typing import Literal, Optional
 
 import jwt
 from API.config import settings
 from API.schemas import TokenPayload
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
+from API.exceptions import TokenExpired, TokenInvalid
 
 OAUTH2_SCHEME = OAuth2PasswordBearer(
-    tokenUrl="/v1/auth/login",
+    tokenUrl="/v1/auth/token",
     refreshUrl="/v1/auth/refresh",
 )
 
@@ -34,8 +34,8 @@ def create_access_token(data: dict) -> str:
     )
     to_encode.update(
         {
-            "exp": expire,
-            "issued_at": datetime.now(timezone.utc),
+            "exp": expire.timestamp(),
+            "issued_at": datetime.now(timezone.utc).timestamp(),
             "refresh_count": 0,
         }
     )
@@ -56,16 +56,8 @@ async def validate_token(
             options={"verify_exp": True},
         )
     except jwt.ExpiredSignatureError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Token has expired",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise TokenExpired().to_http()
     except jwt.InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise TokenInvalid().to_http()
 
     return TokenPayload.model_validate(payload)
