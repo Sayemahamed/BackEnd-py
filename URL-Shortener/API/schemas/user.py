@@ -43,7 +43,10 @@ class UserUpdateSchema(BaseModel):
     )
     email: Optional[EmailStr] = Field(None, description="User email address")
     previous_password: Optional[str] = Field(
-        None, min_length=8, description="Previous password for password update", repr=False
+        None,
+        min_length=8,
+        description="Previous password for password update",
+        repr=False,
     )
     new_password: Optional[str] = Field(
         None, min_length=8, description="New password", repr=False
@@ -78,6 +81,7 @@ class UserResponseSchema(UserBaseSchema):
     updated_at: datetime
 
     model_config = ConfigDict(extra="forbid", from_attributes=True)
+
 
 class UserDeleteSchema(BaseModel):
     password: str

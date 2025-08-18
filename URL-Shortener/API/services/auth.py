@@ -1,16 +1,17 @@
 from datetime import datetime, timedelta, timezone
 
 import jwt
-from API.config import settings
-from API.schemas import TokenPayload
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
+
+from API.config import settings
 from API.exceptions import TokenExpired, TokenInvalid
+from API.schemas import TokenPayload
 
 OAUTH2_SCHEME = OAuth2PasswordBearer(
-    tokenUrl="/v1/auth/token",
-    refreshUrl="/v1/auth/refresh",
+    tokenUrl="/api/v1/auth/token",
+    refreshUrl="/api/v1/auth/refresh",
 )
 
 PWD_CONTEXT = CryptContext(

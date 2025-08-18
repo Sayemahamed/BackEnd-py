@@ -1,10 +1,21 @@
-from API.db import User, get_async_session
-from API.schemas import UserResponseSchema, UserCreationSchema, UserUpdateSchema, TokenPayload, UserDeleteSchema
-from API.services import UserService, validate_token
-from sqlmodel.ext.asyncio.session import AsyncSession
 from fastapi import APIRouter, Depends, status
-from API.exceptions import UserAlreadyExists,IntegrityError,UserNotFound,WrongPassword
+from sqlmodel.ext.asyncio.session import AsyncSession
 
+from API.db import User, get_async_session
+from API.exceptions import (
+    IntegrityError,
+    UserAlreadyExists,
+    UserNotFound,
+    WrongPassword,
+)
+from API.schemas import (
+    TokenPayload,
+    UserCreationSchema,
+    UserDeleteSchema,
+    UserResponseSchema,
+    UserUpdateSchema,
+)
+from API.services import UserService, validate_token
 
 user_router = APIRouter()
 
@@ -23,16 +34,17 @@ async def create_user(
     try:
         user = await user_service.create_user(user_data, session)
         return UserResponseSchema(
-        id=user.id,
-        created_at=user.created_at,
-        updated_at=user.updated_at,
-        username=user.username,
-        email=user.email,
+            id=user.id,
+            created_at=user.created_at,
+            updated_at=user.updated_at,
+            username=user.username,
+            email=user.email,
         )
     except UserAlreadyExists as exp:
         raise exp.to_http()
     except IntegrityError as exp:
         raise exp.to_http()
+
 
 @user_router.get(
     "/me",
@@ -56,6 +68,7 @@ async def get_current_user(
         username=user.username,
         email=user.email,
     )
+
 
 @user_router.patch(
     "/me",
@@ -86,6 +99,7 @@ async def update_current_user(
     except IntegrityError as exp:
         raise exp.to_http()
 
+
 @user_router.delete(
     "/me",
     status_code=status.HTTP_204_NO_CONTENT,
@@ -101,6 +115,6 @@ async def delete_current_user(
     if not user:
         raise UserNotFound().to_http()
     try:
-        await user_service.delete_user(user_data,user, session)
+        await user_service.delete_user(user_data, user, session)
     except WrongPassword as exp:
         raise exp.to_http()

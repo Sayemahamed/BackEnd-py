@@ -29,7 +29,9 @@ class APIException(Exception):
         extra: Optional[Dict[str, Any]] = None,
     ) -> None:
         # Set detail, falling back to class‐level _detail or generic text
-        self._detail = detail or getattr(self, "_detail", "An unexpected error occurred.")
+        self._detail = detail or getattr(
+            self, "_detail", "An unexpected error occurred."
+        )
         # Pull default from private class var, override if provided
         self._error_code = error_code or self._default_error_code
         # Pull default status, override if provided
@@ -103,8 +105,6 @@ class Conflict(APIException):
 class ServiceUnavailable(APIException):
     status = HTTPStatus.SERVICE_UNAVAILABLE
     _default_error_code = "service_unavailable"
-
-
 
 
 class IntegrityError(Conflict):

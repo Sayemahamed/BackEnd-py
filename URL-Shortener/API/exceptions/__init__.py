@@ -1,4 +1,10 @@
-from .base import APIException,IntegrityError
+from .auth import (
+    AuthenticationError,
+    PasswordOrEmailInvalid,
+    TokenExpired,
+    TokenInvalid,
+    WrongPassword,
+)
+from .base import APIException, IntegrityError
+from .db import DuplicateEntry, ForeignKeyViolation
 from .user import UserAlreadyExists, UserNotFound
-from .auth import AuthenticationError,TokenExpired,TokenInvalid,PasswordOrEmailInvalid,WrongPassword
-from .db import DuplicateEntry,ForeignKeyViolation

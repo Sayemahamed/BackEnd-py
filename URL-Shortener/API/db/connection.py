@@ -1,10 +1,11 @@
 from typing import Any, AsyncGenerator
 
-from API.config import settings
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.ext.asyncio.engine import AsyncEngine
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
+
+from API.config import settings
 
 engine: AsyncEngine = create_async_engine(
     url=settings.POSTGRES_URL_ASYNC,
