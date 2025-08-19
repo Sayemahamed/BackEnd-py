@@ -1,8 +1,17 @@
 from API.db import User, get_async_session
-from API.exceptions import (IntegrityError, UserAlreadyExists, UserNotFound,
-                            WrongPassword)
-from API.schemas import (TokenPayload, UserCreationSchema, UserDeleteSchema,
-                         UserResponseSchema, UserUpdateSchema)
+from API.exceptions import (
+    IntegrityError,
+    UserAlreadyExists,
+    UserNotFound,
+    WrongPassword,
+)
+from API.schemas import (
+    TokenPayload,
+    UserCreationSchema,
+    UserDeleteSchema,
+    UserResponseSchema,
+    UserUpdateSchema,
+)
 from API.services import UserService, validate_token
 from fastapi import APIRouter, Depends, status
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -11,7 +20,7 @@ user_router = APIRouter()
 
 
 @user_router.post(
-    "/",
+    "/register",
     response_model=UserResponseSchema,
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
@@ -47,7 +56,6 @@ async def get_current_user(
     token: TokenPayload = Depends(validate_token),
     session: AsyncSession = Depends(get_async_session),
 ) -> UserResponseSchema:
-    print(token)
     user: User | None = await user_service.get_user_by_id(token.user_id, session)
     if not user:
         raise UserNotFound().to_http()

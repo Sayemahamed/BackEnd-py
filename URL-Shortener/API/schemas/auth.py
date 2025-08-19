@@ -16,6 +16,7 @@ class TokenResponse(BaseModel):
     """Schema for the response containing the access token."""
 
     access_token: str
+    refresh_token: str
     token_type: str
 
     # Pydantic V2 configuration

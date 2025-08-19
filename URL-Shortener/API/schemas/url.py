@@ -11,7 +11,6 @@ class URLCreationSchema(BaseModel):
         description="The URL to shorten (must start with http:// or https://)",
     )
 
-
     # Forbid extra fields and allow population from attribute names
     model_config = ConfigDict(
         extra="forbid",
@@ -19,14 +18,10 @@ class URLCreationSchema(BaseModel):
     )
 
 
-
-
 class URLCreatedResponseSchema(BaseModel):
     id: UUID = Field(..., description="Primary key of the ShortURL record")
     short_code: str = Field(..., description="Generated slug (e.g. aB78xZ)")
-    original_url: str = Field(
-        ..., description="The original URL that was shortened"
-    )
+    original_url: str = Field(..., description="The original URL that was shortened")
     short_url: str = Field(..., description="Full shortened URL (including domain)")
     created_at: datetime = Field(..., description="When this short link was created")
     expires_at: Optional[datetime] = Field(
@@ -41,8 +36,8 @@ class URLCreatedResponseSchema(BaseModel):
 
 class URLInfo(BaseModel):
     id: UUID = Field(..., description="Short URL entry ID")
-    short_url: HttpUrl = Field(..., description="Full shortened URL")
-    original_url: HttpUrl = Field(..., description="Original target URL")
+    short_url: str = Field(..., description="Full shortened URL")
+    original_url: str = Field(..., description="Original target URL")
     visit_count: int = Field(
         ...,
         ge=0,
