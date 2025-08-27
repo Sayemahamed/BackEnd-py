@@ -1,7 +1,10 @@
 from API.db import get_async_session
-from API.exceptions import PasswordOrEmailInvalid
 from API.schemas import TokenResponse
-from API.services import UserService, create_access_token, verify_password,create_refresh_token
+from API.services import (
+    UserService,
+    create_access_token,
+    verify_password,
+)
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -20,5 +23,7 @@ async def get_token_for_user(
         raise PasswordOrEmailInvalid().to_http()
 
     access_token = create_access_token(data={"user_id": user.id.hex})
-    refresh_token=create_refresh_token(data={"user_id": user.id.hex})
-    return TokenResponse(access_token=access_token, refresh_token=refresh_token, token_type="bearer")
+    refresh_token = create_refresh_token(data={"user_id": user.id.hex})
+    return TokenResponse(
+        access_token=access_token, refresh_token=refresh_token, token_type="bearer"
+    )

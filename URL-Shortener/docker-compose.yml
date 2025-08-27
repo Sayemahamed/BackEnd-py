@@ -29,9 +29,7 @@ services:
     ports:
       - "5432:5432"
 
-  # redis:
-  #   image: redis:latest
-  #   restart: always
+
   dragonfly:                                                                                                                                    
     image: 'docker.dragonflydb.io/dragonflydb/dragonfly'                                                                                        
     ulimits:

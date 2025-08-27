@@ -1,10 +1,19 @@
-from .auth import (
+from .handlers import (
+    AppException,
     AuthenticationError,
-    PasswordOrEmailInvalid,
-    TokenExpired,
-    TokenInvalid,
-    WrongPassword,
+    AuthorizationError,
+    ErrorResponse,
+    NotFoundError,
+    ValidationError,
+    register_exception_handlers,
 )
-from .base import APIException, IntegrityError
-from .db import DuplicateEntry, ForeignKeyViolation
-from .user import UserAlreadyExists, UserNotFound
+
+__all__ = [
+    "AppException",
+    "NotFoundError",
+    "ValidationError",
+    "AuthenticationError",
+    "AuthorizationError",
+    "ErrorResponse",
+    "register_exception_handlers",
+]

@@ -3,23 +3,19 @@ from typing import Optional
 
 import jwt
 from API.config import settings
-from API.exceptions import TokenExpired, TokenInvalid
 from API.schemas import TokenPayload
-from fastapi import Depends, Request
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 
 OAUTH2_SCHEME = OAuth2PasswordBearer(
-    tokenUrl="/api/v1/auth/token",
-    refreshUrl="/api/v1/auth/refresh",
-    auto_error=False
+    tokenUrl="/api/v1/auth/token", refreshUrl="/api/v1/auth/refresh", auto_error=False
 )
 
 PWD_CONTEXT = CryptContext(
     schemes=["bcrypt"],
     deprecated="auto",
 )
-
 
 
 def verify_password(plain_password, hashed_password):
@@ -46,23 +42,6 @@ def create_access_token(data: dict) -> str:
     )
     return encoded_jwt
 
-def create_refresh_token(data: dict) -> str:
-    to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + timedelta(
-        days=settings.REFRESH_TOKEN_EXPIRE_DAYS
-    )
-    refresh_count = to_encode.get("refresh_count", -1) + 1
-    to_encode.update(
-        {
-            "exp": expire.timestamp(),
-            "issued_at": datetime.now(timezone.utc).timestamp(),
-            "refresh_count": refresh_count,
-        }
-    )
-    encoded_jwt = jwt.encode(
-        to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
-    )
-    return encoded_jwt
 
 async def validate_token(
     token: Optional[str] = Depends(OAUTH2_SCHEME),

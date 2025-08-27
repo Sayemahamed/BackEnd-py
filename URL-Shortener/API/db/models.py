@@ -3,9 +3,9 @@ from datetime import datetime
 from typing import Optional
 
 from pydantic import EmailStr
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, text
+from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import TEXT, UUID
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel,String,Boolean,text
 
 
 class User(SQLModel, table=True):
@@ -32,7 +32,7 @@ class User(SQLModel, table=True):
 
     email: EmailStr = Field(
         sa_column=Column(
-            TEXT,
+            String(254),
             nullable=False,
             index=True,
             unique=True,
@@ -43,18 +43,27 @@ class User(SQLModel, table=True):
 
     hashed_password: str = Field(
         sa_column=Column(
-            TEXT,
+            String(255),
             nullable=False,
             comment="Stores bcrypt/Argon2 hashes",
         )
     )
 
-    jwt_expires: datetime = Field(
+    is_active: bool = Field(
         sa_column=Column(
-            DateTime(timezone=True),
+            Boolean(),
             nullable=False,
-            server_default=text("CURRENT_TIMESTAMP"),
-            comment="JWT expiration timestamp",
+            server_default=text("true"),
+            comment="Whether the user is active or not",
+        )
+    )
+
+    is_superuser: bool = Field(
+        sa_column=Column(
+            Boolean(),
+            nullable=False,
+            server_default=text("false"),
+            comment="Whether the user is a superuser or not",
         )
     )
 
@@ -187,7 +196,7 @@ class Visit(SQLModel, table=True):
 
     user_agent: str = Field(
         sa_column=Column(
-            TEXT,
+            String(100),
             nullable=False,
             comment="User-Agent header text",
         )
