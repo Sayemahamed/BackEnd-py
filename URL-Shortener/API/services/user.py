@@ -1,5 +1,10 @@
 from API.db import User
-from API.exceptions import IntegrityError, UserAlreadyExists, WrongPassword, EmailAlreadyRegistered
+from API.exceptions import (
+    EmailAlreadyRegistered,
+    IntegrityError,
+    UserAlreadyExists,
+    WrongPassword,
+)
 from API.schemas import UserCreationSchema, UserDeleteSchema, UserUpdateSchema
 from API.services import get_password_hash, verify_password
 from sqlalchemy.exc import IntegrityError as alchemy_IntegrityError

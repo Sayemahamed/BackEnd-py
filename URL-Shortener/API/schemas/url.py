@@ -17,6 +17,7 @@ class URLCreationSchema(BaseModel):
         populate_by_name=True,
     )
 
+
 class URLUpdateSchema(BaseModel):
     original_url: HttpUrl = Field(
         ...,
@@ -26,6 +27,8 @@ class URLUpdateSchema(BaseModel):
         extra="forbid",
         populate_by_name=True,
     )
+
+
 class URLCreatedResponseSchema(BaseModel):
     id: UUID = Field(..., description="Primary key of the ShortURL record")
     short_code: str = Field(..., description="Generated slug (e.g. aB78xZ)")

@@ -5,7 +5,7 @@ from typing import Optional
 from pydantic import EmailStr
 from sqlalchemy import Column, DateTime, ForeignKey, Integer
 from sqlalchemy.dialects.postgresql import TEXT, UUID
-from sqlmodel import Field, SQLModel,String,Boolean,text
+from sqlmodel import Boolean, Field, SQLModel, String, text
 
 
 class User(SQLModel, table=True):

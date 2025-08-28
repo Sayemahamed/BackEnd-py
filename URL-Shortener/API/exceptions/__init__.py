@@ -1,4 +1,4 @@
-from .user import EmailAlreadyRegistered,UserAlreadyExists
-from .db import IntegrityError
 from .auth import WrongPassword
+from .db import IntegrityError
 from .url import NOSuchURL
+from .user import EmailAlreadyRegistered, UserAlreadyExists
