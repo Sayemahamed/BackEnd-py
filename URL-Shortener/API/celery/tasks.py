@@ -10,5 +10,5 @@ app.conf.enable_utc = True
 
 
 @app.task(name="test")
-def test():
-    return "test"
+def prepare_report(load:dict) -> dict:
+    return load

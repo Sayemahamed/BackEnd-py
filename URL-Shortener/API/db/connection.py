@@ -34,7 +34,7 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, Any]:
 async def init_db():
     async with engine.begin() as conn:
         try:
-            from API.db.models import User
+            from API.db.models import User,Visit,ShortURL
 
             await conn.run_sync(SQLModel.metadata.create_all)
         except Exception:

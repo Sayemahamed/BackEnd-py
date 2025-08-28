@@ -1,1 +1,1 @@
-from .tasks import test
+from .tasks import prepare_report
