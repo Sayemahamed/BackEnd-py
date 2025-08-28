@@ -85,3 +85,5 @@ class UserResponseSchema(UserBaseSchema):
 
 class UserDeleteSchema(BaseModel):
     password: str
+
+    model_config = ConfigDict(extra="forbid",json_schema_extra={"example": {"password": "password123"}})

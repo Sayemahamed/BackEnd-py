@@ -4,7 +4,7 @@ from typing import Optional
 import jwt
 from API.config import settings
 from API.schemas import TokenPayload
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 
@@ -34,6 +34,7 @@ def create_access_token(data: dict) -> str:
     to_encode.update(
         {
             "exp": expire.timestamp(),
+            "scopes": data.get("scopes", []),
             "issued_at": datetime.now(timezone.utc).timestamp(),
         }
     )
@@ -59,6 +60,6 @@ async def validate_token(
         return TokenPayload.model_validate(payload)
 
     except jwt.ExpiredSignatureError:
-        raise TokenExpired().to_http()
+        raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidTokenError:
-        raise TokenInvalid().to_http()
+        raise HTTPException(status_code=401, detail="Invalid token")

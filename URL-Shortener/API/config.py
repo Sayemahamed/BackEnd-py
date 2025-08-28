@@ -13,6 +13,10 @@ class Settings(BaseSettings):
     # --- Core ---
     SECRET_KEY: str = Field(..., description="Secret key for signing JWTs")
     ALGORITHM: str = Field("HS256", description="Algorithm used for JWT signing")
+    NANO_CODE_STRING: str = Field(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        description="String used for generating short codes",
+    )
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
         90, description="Access token validity duration in minutes"
     )
